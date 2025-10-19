@@ -21,7 +21,7 @@ import AfterDashboard from "./components/AfterDashboard"; // NOVÉ: Komponent pr
 import { Categories } from "./collections/Categories";
 import { Media } from "./collections/Media";
 import { Pages } from "./collections/Pages";
-import { Posts } from "./collections/Posts";
+// import { Posts } from "./collections/Posts";
 import { Users } from "./collections/Users";
 
 // UPRAVENÉ: Importy pre Globals, aby zodpovedali e-commerce šablóne
@@ -75,7 +75,7 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || "",
     },
   }), // UPRAVENÉ: Pridané nové kolekcie Products a Orders
-  collections: [Pages, Posts, Media, Categories, Users, Products],
+  collections: [Pages, Media, Categories, Users, Products],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer], // UPRAVENÉ: Pridané pluginy z e-commerce šablóny
   plugins: [
@@ -84,14 +84,14 @@ export default buildConfig({
     // NOVÉ: Pluginy pre e-commerce
     // ---
     nestedDocs({
-      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
+      collections: ["pages"],
     }),
     redirects({
-      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
+      collections: ["pages"],
     }),
     seo({
-      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
-      uploadsCollection: "media", // Uisti sa, že 'media' je správny slug
+      collections: ["pages"],
+      uploadsCollection: "media",
     }),
     // ---
     vercelBlobStorage({
