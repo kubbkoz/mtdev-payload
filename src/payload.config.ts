@@ -38,10 +38,9 @@ const dirname = path.dirname(filename);
 export default buildConfig({
   admin: {
     components: {
-      // UPRAVENÉ: Používame komponent z e-commerce šablóny
-      beforeLogin: [BeforeLogin], // Ponechávame tvoj existujúci 'BeforeDashboard'
-      beforeDashboard: ["@/components/BeforeDashboard"], // NOVÉ: Pridaný 'AfterDashboard' z e-commerce šablóny
-      afterDashboard: [AfterDashboard],
+      // UPRAVENÉ: Vrátené do pôvodného stavu
+      beforeLogin: ["@/components/BeforeLogin"],
+      beforeDashboard: ["@/components/BeforeDashboard"],
     },
     importMap: {
       baseDir: path.resolve(dirname),
