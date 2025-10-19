@@ -12,7 +12,6 @@ import { fileURLToPath } from "url";
 import nestedDocs from "@payloadcms/plugin-nested-docs";
 import redirects from "@payloadcms/plugin-redirects";
 import seo from "@payloadcms/plugin-seo";
-import { sitemap } from "@payloadcms/plugin-sitemap";
 import Products from "./collections/Products"; // NOVÉ: Kolekcia produktov
 import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
 import BeforeLogin from "./components/BeforeLogin"; // NOVÉ: Komponent pre prihlásenie
@@ -94,9 +93,6 @@ export default buildConfig({
     seo({
       collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
       uploadsCollection: "media", // Uisti sa, že 'media' je správny slug
-    }),
-    sitemap({
-      domains: [process.env.PAYLOAD_PUBLIC_SERVER_URL], // Dôležité: pozri poznámku nižšie
     }),
     // ---
     vercelBlobStorage({
