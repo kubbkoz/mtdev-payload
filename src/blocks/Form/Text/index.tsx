@@ -5,28 +5,40 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import React from 'react'
 
-import { Error } from '../Error'
 import { Width } from '../Width'
+import { FormItem } from '@/components/forms/FormItem'
+import { FormError } from '@/components/forms/FormError'
+import { capitaliseFirstLetter } from '@/utilities/capitaliseFirstLetter'
 
 export const Text: React.FC<
   TextField & {
-    errors: Partial<FieldErrorsImpl>
+    errors: Partial<
+      FieldErrorsImpl<{
+        [x: string]: any
+      }>
+    >
     register: UseFormRegister<FieldValues>
   }
-> = ({ name, defaultValue, errors, label, register, required, width }) => {
+> = ({ name, defaultValue, errors, label, register, required: requiredFromProps, width }) => {
   return (
     <Width width={width}>
-      <Label htmlFor={name}>
-        {label}
+      <FormItem>
+        <Label htmlFor={name}>{label}</Label>
+        <Input
+          defaultValue={defaultValue}
+          id={name}
+          type="text"
+          {...register(name, {
+            required: requiredFromProps
+              ? `${capitaliseFirstLetter(label || name)} is required.`
+              : undefined,
+          })}
+        />
 
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
+        {errors?.[name]?.message && typeof errors?.[name]?.message === 'string' && (
+          <FormError message={errors?.[name]?.message} />
         )}
-      </Label>
-      <Input defaultValue={defaultValue} id={name} type="text" {...register(name, { required })} />
-      {errors[name] && <Error name={name} />}
+      </FormItem>
     </Width>
   )
 }

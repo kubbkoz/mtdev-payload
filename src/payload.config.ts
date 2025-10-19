@@ -1,34 +1,48 @@
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
+import { vercelPostgresAdapter } from "@payloadcms/db-vercel-postgres";
 
-import sharp from 'sharp' // sharp-import
-import path from 'path'
-import { buildConfig, PayloadRequest } from 'payload'
-import { fileURLToPath } from 'url'
+import sharp from "sharp"; // sharp-import
+import path from "path";
+import { buildConfig, PayloadRequest } from "payload";
+import { fileURLToPath } from "url";
 
-import { Categories } from './collections/Categories'
-import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
-import { Users } from './collections/Users'
-import { Footer } from './Footer/config'
-import { Header } from './Header/config'
-import { plugins } from './plugins'
-import { defaultLexical } from '@/fields/defaultLexical'
-import { getServerSideURL } from './utilities/getURL'
+// ---
+// NOVÉ: Importy pre e-commerce šablónu
+// ---
+import nestedDocs from "@payloadcms/plugin-nested-docs";
+import redirects from "@payloadcms/plugin-redirects";
+import seo from "@payloadcms/plugin-seo";
+import { sitemap } from "@payloadcms/plugin-sitemap";
+import Products from "./collections/Products"; // NOVÉ: Kolekcia produktov
+import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
+import BeforeLogin from "./components/BeforeLogin"; // NOVÉ: Komponent pre prihlásenie
+import AfterDashboard from "./components/AfterDashboard"; // NOVÉ: Komponent pre dashboard
+// ---
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+import { Categories } from "./collections/Categories";
+import { Media } from "./collections/Media";
+import { Pages } from "./collections/Pages";
+import { Posts } from "./collections/Posts";
+import { Users } from "./collections/Users";
+
+// UPRAVENÉ: Importy pre Globals, aby zodpovedali e-commerce šablóne
+import { Footer } from "./globals/Footer"; // UPRAVENÉ (cesta)
+import { Header } from "./globals/Header"; // UPRAVENÉ (cesta)
+
+import { plugins } from "./plugins";
+import { defaultLexical } from "@/fields/defaultLexical";
+import { getServerSideURL } from "./utilities/getURL";
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default buildConfig({
   admin: {
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
-      beforeDashboard: ['@/components/BeforeDashboard'],
+      // UPRAVENÉ: Používame komponent z e-commerce šablóny
+      beforeLogin: [BeforeLogin], // Ponechávame tvoj existujúci 'BeforeDashboard'
+      beforeDashboard: ["@/components/BeforeDashboard"], // NOVÉ: Pridaný 'AfterDashboard' z e-commerce šablóny
+      afterDashboard: [AfterDashboard],
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -37,63 +51,76 @@ export default buildConfig({
     livePreview: {
       breakpoints: [
         {
-          label: 'Mobile',
-          name: 'mobile',
+          label: "Mobile",
+          name: "mobile",
           width: 375,
           height: 667,
         },
         {
-          label: 'Tablet',
-          name: 'tablet',
+          label: "Tablet",
+          name: "tablet",
           width: 768,
           height: 1024,
         },
         {
-          label: 'Desktop',
-          name: 'desktop',
+          label: "Desktop",
+          name: "desktop",
           width: 1440,
           height: 900,
         },
       ],
     },
-  },
-  // This config helps us configure global or default features that the other editors can inherit
+  }, // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: process.env.POSTGRES_URL || "",
     },
-  }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  }), // UPRAVENÉ: Pridané nové kolekcie Products a Orders
+  collections: [Pages, Posts, Media, Categories, Users, Products, Orders],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer], // UPRAVENÉ: Pridané pluginy z e-commerce šablóny
   plugins: [
     ...plugins,
+    // ---
+    // NOVÉ: Pluginy pre e-commerce
+    // ---
+    nestedDocs({
+      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
+    }),
+    redirects({
+      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
+    }),
+    seo({
+      collections: ["pages", "posts"], // Uisti sa, že 'pages' a 'posts' sú správne slugy
+      uploadsCollection: "media", // Uisti sa, že 'media' je správny slug
+    }),
+    sitemap({
+      domains: [process.env.PAYLOAD_PUBLIC_SERVER_URL], // Dôležité: pozri poznámku nižšie
+    }),
+    // ---
     vercelBlobStorage({
       collections: {
         media: true,
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+      token: process.env.BLOB_READ_WRITE_TOKEN || "",
     }),
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
         // Allow logged in users to execute this endpoint (default)
-        if (req.user) return true
+        if (req.user) return true; // If there is no logged in user, then check // for the Vercel Cron secret to be present as an // Authorization header:
 
-        // If there is no logged in user, then check
-        // for the Vercel Cron secret to be present as an
-        // Authorization header:
-        const authHeader = req.headers.get('authorization')
-        return authHeader === `Bearer ${process.env.CRON_SECRET}`
+        const authHeader = req.headers.get("authorization");
+        return authHeader === `Bearer ${process.env.CRON_SECRET}`;
       },
     },
     tasks: [],
   },
-})
+});

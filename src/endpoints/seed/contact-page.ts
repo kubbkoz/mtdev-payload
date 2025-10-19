@@ -1,11 +1,12 @@
 import type { Form } from '@/payload-types'
+
 import { RequiredDataFromCollectionSlug } from 'payload'
 
-type ContactArgs = {
+type ProductArgs = {
   contactForm: Form
 }
 
-export const contact: (args: ContactArgs) => RequiredDataFromCollectionSlug<'pages'> = ({
+export const contactPageData: (args: ProductArgs) => RequiredDataFromCollectionSlug<'pages'> = ({
   contactForm,
 }) => {
   return {

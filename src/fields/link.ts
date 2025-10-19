@@ -1,6 +1,6 @@
-import type { Field, GroupField } from 'payload'
+import type { Field } from 'payload'
 
-import deepMerge from '@/utilities/deepMerge'
+import { deepMerge } from '@/utilities/deepMerge'
 
 export type LinkAppearances = 'default' | 'outline'
 
@@ -18,11 +18,11 @@ export const appearanceOptions: Record<LinkAppearances, { label: string; value: 
 type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
-  overrides?: Partial<GroupField>
+  overrides?: Record<string, unknown>
 }) => Field
 
 export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
-  const linkResult: GroupField = {
+  const linkResult: Field = {
     name: 'link',
     type: 'group',
     admin: {
@@ -75,7 +75,8 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
       label: 'Document to link to',
-      relationTo: ['pages', 'posts'],
+      maxDepth: 1,
+      relationTo: ['pages'],
       required: true,
     },
     {

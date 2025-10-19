@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
 /**
@@ -6,8 +5,8 @@
  * @param item
  * @returns {boolean}
  */
-export function isObject(item: unknown): item is object {
-  return typeof item === 'object' && !Array.isArray(item)
+export function isObject(item: unknown): boolean {
+  return item && typeof item === 'object' && !Array.isArray(item)
 }
 
 /**
@@ -15,7 +14,7 @@ export function isObject(item: unknown): item is object {
  * @param target
  * @param ...sources
  */
-export default function deepMerge<T, R>(target: T, source: R): T {
+export function deepMerge<T, R>(target: T, source: R): T {
   const output = { ...target }
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {

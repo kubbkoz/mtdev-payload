@@ -1,27 +1,27 @@
-import type { RequiredDataFromCollectionSlug } from 'payload'
-import type { Media } from '@/payload-types'
+import type { Category, Media } from '@/payload-types'
+import { RequiredDataFromCollectionSlug } from 'payload'
 
-type HomeArgs = {
-  heroImage: Media
+type ProductArgs = {
   metaImage: Media
+  contentImage: Media
 }
 
-export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> = ({
-  heroImage,
+export const homePageData: (args: ProductArgs) => RequiredDataFromCollectionSlug<'pages'> = ({
   metaImage,
+  contentImage,
 }) => {
   return {
     slug: 'home',
     _status: 'published',
     hero: {
-      type: 'highImpact',
+      type: 'lowImpact',
       links: [
         {
           link: {
             type: 'custom',
             appearance: 'default',
-            label: 'All posts',
-            url: '/posts',
+            label: 'All products',
+            url: '/search',
           },
         },
         {
@@ -33,7 +33,6 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
           },
         },
       ],
-      media: heroImage.id,
       richText: {
         root: {
           type: 'root',
@@ -47,7 +46,7 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
                   format: 0,
                   mode: 'normal',
                   style: '',
-                  text: 'Payload Website Template',
+                  text: 'Payload Ecommerce Template',
                   version: 1,
                 },
               ],
@@ -109,7 +108,7 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
                   fields: {
                     linkType: 'custom',
                     newTab: true,
-                    url: 'https://github.com/payloadcms/payload/tree/main/templates/website',
+                    url: 'https://github.com/payloadcms/payload/tree/main/templates/ecommerce',
                   },
                   format: '',
                   indent: 0,
@@ -211,7 +210,7 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
                         format: 0,
                         mode: 'normal',
                         style: '',
-                        text: "Manage this site's pages and posts from the ",
+                        text: "Manage this site's pages and products from the ",
                         version: 1,
                       },
                       {
@@ -349,7 +348,7 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
                         format: 0,
                         mode: 'normal',
                         style: '',
-                        text: 'Custom page builder allows you to create unique page, post, and project layouts for any type of content.',
+                        text: 'Custom page builder allows you to create unique page and product layouts for any type of content.',
                         version: 1,
                       },
                     ],
@@ -511,63 +510,7 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
       {
         blockName: 'Media Block',
         blockType: 'mediaBlock',
-        media: metaImage.id,
-      },
-      {
-        blockName: 'Archive Block',
-        blockType: 'archive',
-        categories: [],
-        introContent: {
-          root: {
-            type: 'root',
-            children: [
-              {
-                type: 'heading',
-                children: [
-                  {
-                    type: 'text',
-                    detail: 0,
-                    format: 0,
-                    mode: 'normal',
-                    style: '',
-                    text: 'Recent posts',
-                    version: 1,
-                  },
-                ],
-                direction: 'ltr',
-                format: '',
-                indent: 0,
-                tag: 'h3',
-                version: 1,
-              },
-              {
-                type: 'paragraph',
-                children: [
-                  {
-                    type: 'text',
-                    detail: 0,
-                    format: 0,
-                    mode: 'normal',
-                    style: '',
-                    text: 'The posts below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
-                    version: 1,
-                  },
-                ],
-                direction: 'ltr',
-                format: '',
-                indent: 0,
-                textFormat: 0,
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            version: 1,
-          },
-        },
-        populateBy: 'collection',
-        relationTo: 'posts',
+        media: contentImage,
       },
       {
         blockName: 'CTA',
@@ -577,8 +520,8 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
             link: {
               type: 'custom',
               appearance: 'default',
-              label: 'All posts',
-              url: '/posts',
+              label: 'All products',
+              url: '/products',
             },
           },
         ],
@@ -666,9 +609,10 @@ export const home: (args: HomeArgs) => RequiredDataFromCollectionSlug<'pages'> =
       },
     ],
     meta: {
-      description: 'An open-source website built with Payload and Next.js.',
-      image: heroImage.id,
-      title: 'Payload Website Template',
+      description: 'An open-source ecommerce site built with Payload and Next.js.',
+      // @ts-ignore
+      image: metaImage,
+      title: 'Payload Ecommerce Template',
     },
     title: 'Home',
   }

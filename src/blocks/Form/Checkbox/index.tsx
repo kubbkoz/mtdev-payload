@@ -9,14 +9,26 @@ import React from 'react'
 
 import { Error } from '../Error'
 import { Width } from '../Width'
+import { capitaliseFirstLetter } from '@/utilities/capitaliseFirstLetter'
+import { FormError } from '@/components/forms/FormError'
 
 export const Checkbox: React.FC<
   CheckboxField & {
-    errors: Partial<FieldErrorsImpl>
+    errors: Partial<
+      FieldErrorsImpl<{
+        [x: string]: any
+      }>
+    >
+    getValues: any
     register: UseFormRegister<FieldValues>
+    setValue: any
   }
-> = ({ name, defaultValue, errors, label, register, required, width }) => {
-  const props = register(name, { required: required })
+> = ({ name, defaultValue, errors, label, register, required: requiredFromProps, width }) => {
+  const props = register(name, {
+    required: requiredFromProps
+      ? `${capitaliseFirstLetter(label || name)} is required.`
+      : undefined,
+  })
   const { setValue } = useFormContext()
 
   return (
@@ -30,16 +42,11 @@ export const Checkbox: React.FC<
             setValue(props.name, checked)
           }}
         />
-        <Label htmlFor={name}>
-          {required && (
-            <span className="required">
-              * <span className="sr-only">(required)</span>
-            </span>
-          )}
-          {label}
-        </Label>
+        <Label htmlFor={name}>{label}</Label>
       </div>
-      {errors[name] && <Error name={name} />}
+      {errors?.[name]?.message && typeof errors?.[name]?.message === 'string' && (
+        <FormError message={errors?.[name]?.message} />
+      )}
     </Width>
   )
 }

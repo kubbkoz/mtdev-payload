@@ -6,10 +6,10 @@ import { useCallback, useEffect, useRef } from 'react'
 
 type UseClickableCardType<T extends HTMLElement> = {
   card: {
-    ref: RefObject<T | null>
+    ref: RefObject<T>
   }
   link: {
-    ref: RefObject<HTMLAnchorElement | null>
+    ref: RefObject<HTMLAnchorElement>
   }
 }
 
@@ -19,7 +19,7 @@ interface Props {
   scroll?: boolean
 }
 
-function useClickableCard<T extends HTMLElement>({
+export function useClickableCard<T extends HTMLElement>({
   external = false,
   newTab = false,
   scroll = true,
@@ -78,31 +78,30 @@ function useClickableCard<T extends HTMLElement>({
   useEffect(() => {
     const cardNode = card.current
 
-    const abortController = new AbortController()
-
     if (cardNode) {
-      cardNode.addEventListener('mousedown', handleMouseDown, {
-        signal: abortController.signal,
-      })
-      cardNode.addEventListener('mouseup', handleMouseUp, {
-        signal: abortController.signal,
-      })
+      cardNode.addEventListener('mousedown', handleMouseDown)
+      cardNode.addEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
-      abortController.abort()
+      if (cardNode) {
+        if (cardNode) {
+          cardNode?.removeEventListener('mousedown', handleMouseDown)
+          cardNode?.removeEventListener('mouseup', handleMouseUp)
+        }
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [card, link, router])
 
   return {
     card: {
+      // @ts-expect-error
       ref: card,
     },
     link: {
+      // @ts-expect-error
       ref: link,
     },
   }
 }
-
-export default useClickableCard

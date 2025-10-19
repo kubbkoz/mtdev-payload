@@ -1,28 +1,40 @@
 'use client'
-import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
+import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
 
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
-import RichText from '@/components/RichText'
+import { RichText } from '@/components/RichText'
 import { Button } from '@/components/ui/button'
-import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
+import { buildInitialFormState } from './buildInitialFormState'
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { DefaultDocumentIDType } from 'payload'
+
+export type Value = unknown
+
+export interface Property {
+  [key: string]: Value
+}
+
+export interface Data {
+  [key: string]: Property | Property[]
+}
 
 export type FormBlockType = {
   blockName?: string
   blockType?: 'formBlock'
   enableIntro: boolean
   form: FormType
-  introContent?: DefaultTypedEditorState
+  introContent?: SerializedEditorState
 }
 
 export const FormBlock: React.FC<
-  {
-    id?: string
-  } & FormBlockType
+  FormBlockType & {
+    id?: DefaultDocumentIDType
+  }
 > = (props) => {
   const {
     enableIntro,
@@ -32,7 +44,7 @@ export const FormBlock: React.FC<
   } = props
 
   const formMethods = useForm({
-    defaultValues: formFromProps.fields,
+    defaultValues: buildInitialFormState(formFromProps.fields),
   })
   const {
     control,
@@ -47,7 +59,7 @@ export const FormBlock: React.FC<
   const router = useRouter()
 
   const onSubmit = useCallback(
-    (data: FormFieldBlock[]) => {
+    (data: Data) => {
       let loadingTimerID: ReturnType<typeof setTimeout>
       const submitForm = async () => {
         setError(undefined)
@@ -131,8 +143,9 @@ export const FormBlock: React.FC<
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
+                    const Field: React.FC<any> | undefined =
+                      fields?.[field.blockType as keyof typeof fields]
+
                     if (Field) {
                       return (
                         <div className="mb-6 last:mb-0" key={index}>

@@ -1,4 +1,4 @@
-import { Banner } from '@payloadcms/ui/elements/Banner'
+import { Banner } from '@payloadcms/ui'
 import React from 'react'
 
 import { SeedButton } from './SeedButton'
@@ -6,7 +6,7 @@ import './index.scss'
 
 const baseClass = 'before-dashboard'
 
-const BeforeDashboard: React.FC = () => {
+export const BeforeDashboard: React.FC = () => {
   return (
     <div className={baseClass}>
       <Banner className={`${baseClass}__banner`} type="success">
@@ -16,16 +16,31 @@ const BeforeDashboard: React.FC = () => {
       <ul className={`${baseClass}__instructions`}>
         <li>
           <SeedButton />
-          {' with a few pages, posts, and projects to jump-start your new site, then '}
-          <a href="/" target="_blank">
-            visit your website
-          </a>
+          {' with a few products and pages to jump-start your new project, then '}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/">visit your website</a>
           {' to see the results.'}
         </li>
         <li>
-          If you created this repo using Payload Cloud, head over to GitHub and clone it to your
-          local machine. It will be under the <i>GitHub Scope</i> that you selected when creating
-          this project.
+          {'Head over to '}
+          <a
+            href="https://dashboard.stripe.com/test/apikeys"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Stripe to obtain your API Keys
+          </a>
+          {
+            '. Create a new account if needed, then copy them into your environment variables and restart your server. See the '
+          }
+          <a
+            href="https://github.com/payloadcms/payload/blob/main/templates/ecommerce/README.md#stripe"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            README
+          </a>
+          {' for more details.'}
         </li>
         <li>
           {'Modify your '}
@@ -54,13 +69,10 @@ const BeforeDashboard: React.FC = () => {
           </a>
           {' docs.'}
         </li>
-        <li>
-          Commit and push your changes to the repository to trigger a redeployment of your project.
-        </li>
       </ul>
       {'Pro Tip: This block is a '}
       <a
-        href="https://payloadcms.com/docs/custom-components/overview"
+        href="https://payloadcms.com/docs/admin/components#base-component-overrides"
         rel="noopener noreferrer"
         target="_blank"
       >
@@ -70,5 +82,3 @@ const BeforeDashboard: React.FC = () => {
     </div>
   )
 }
-
-export default BeforeDashboard
