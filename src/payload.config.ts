@@ -9,9 +9,9 @@ import { fileURLToPath } from "url";
 // ---
 // NOVÉ: Importy pre e-commerce šablónu
 // ---
-import nestedDocs from "@payloadcms/plugin-nested-docs";
-import redirects from "@payloadcms/plugin-redirects";
-import seo from "@payloadcms/plugin-seo";
+import { nestedDocs } from "@payloadcms/plugin-nested-docs";
+import { redirects } from "@payloadcms/plugin-redirects";
+import { seo } from "@payloadcms/plugin-seo";
 import { ProductsCollection } from "./collections/Products"; // NOVÉ: Kolekcia produktov
 // import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
 import BeforeLogin from "./components/BeforeLogin"; // NOVÉ: Komponent pre prihlásenie
