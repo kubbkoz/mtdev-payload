@@ -12,7 +12,7 @@ import { fileURLToPath } from "url";
 import nestedDocs from "@payloadcms/plugin-nested-docs";
 import redirects from "@payloadcms/plugin-redirects";
 import seo from "@payloadcms/plugin-seo";
-import Products from "./collections/Products"; // NOVÉ: Kolekcia produktov
+import { Products } from "./collections/Products"; // NOVÉ: Kolekcia produktov
 // import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
 import BeforeLogin from "./components/BeforeLogin"; // NOVÉ: Komponent pre prihlásenie
 import AfterDashboard from "./components/AfterDashboard"; // NOVÉ: Komponent pre dashboard
