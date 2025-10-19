@@ -13,7 +13,7 @@ import nestedDocs from "@payloadcms/plugin-nested-docs";
 import redirects from "@payloadcms/plugin-redirects";
 import seo from "@payloadcms/plugin-seo";
 import Products from "./collections/Products"; // NOVÉ: Kolekcia produktov
-import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
+// import Orders from "./collections/Orders"; // NOVÉ: Kolekcia objednávok
 import BeforeLogin from "./components/BeforeLogin"; // NOVÉ: Komponent pre prihlásenie
 import AfterDashboard from "./components/AfterDashboard"; // NOVÉ: Komponent pre dashboard
 // ---
@@ -76,7 +76,7 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || "",
     },
   }), // UPRAVENÉ: Pridané nové kolekcie Products a Orders
-  collections: [Pages, Posts, Media, Categories, Users, Products, Orders],
+  collections: [Pages, Posts, Media, Categories, Users, Products],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer], // UPRAVENÉ: Pridané pluginy z e-commerce šablóny
   plugins: [
