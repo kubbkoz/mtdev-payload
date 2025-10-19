@@ -29,7 +29,7 @@ import { Footer } from "./globals/Footer"; // UPRAVENÉ (cesta)
 import { Header } from "./globals/Header"; // UPRAVENÉ (cesta)
 
 import { plugins } from "./plugins";
-import { defaultLexical } from "@/fields/defaultLexical";
+// import { defaultLexical } from "@/fields/defaultLexical";
 import { getServerSideURL } from "./utilities/getURL";
 
 const filename = fileURLToPath(import.meta.url);
@@ -69,7 +69,7 @@ export default buildConfig({
       ],
     },
   }, // This config helps us configure global or default features that the other editors can inherit
-  editor: defaultLexical,
+  // editor: defaultLexical,
   db: vercelPostgresAdapter({
     pool: {
       connectionString: process.env.POSTGRES_URL || "",
