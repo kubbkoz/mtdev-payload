@@ -22,8 +22,8 @@ import { Pages } from "./collections/Pages";
 import { Users } from "./collections/Users";
 
 // UPRAVENÉ: Importy pre Globals, aby zodpovedali e-commerce šablóne
-import { Footer } from "./globals/Footer"; // UPRAVENÉ (cesta)
-import { Header } from "./globals/Header"; // UPRAVENÉ (cesta)
+import { Footer } from "./Footer/config";
+import { Header } from "./Header/config";
 
 import { plugins } from "./plugins";
 // import { defaultLexical } from "@/fields/defaultLexical";
