@@ -1,30 +1,30 @@
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { seoPlugin } from '@payloadcms/plugin-seo'
-import { Plugin } from 'payload'
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
+// --- Začiatok súboru: src/plugins/index.ts ---
 
-import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
+import { formBuilderPlugin } from "@payloadcms/plugin-form-builder";
+import { seoPlugin } from "@payloadcms/plugin-seo";
+import { Plugin } from "payload";
+import { GenerateTitle, GenerateURL } from "@payloadcms/plugin-seo/types";
+import {
+  FixedToolbarFeature,
+  HeadingFeature,
+  lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 
-import { Page, Product } from '@/payload-types'
-import { getServerSideURL } from '@/utilities/getURL'
-import { ProductsCollection } from '@/collections/Products'
-import { adminOrCustomerOwner } from '@/access/adminOrCustomerOwner'
-import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
-import { adminOnly } from '@/access/adminOnly'
-import { adminOnlyFieldAccess } from '@/access/adminOnlyFieldAccess'
-import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
+// ZMAZALI SME VŠETKY CHÝBAJÚCE IMPORTY (ecommerce, stripe, Products, access)
 
-const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
-}
+import { Page } from "@/payload-types"; // Predpokladáme, že 'Page' existuje
+import { getServerSideURL } from "@/utilities/getURL";
 
-const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
-  const url = getServerSideURL()
+// UPRAVENÉ: Odstránili sme typ 'Product'
+const generateTitle: GenerateTitle<Page> = ({ doc }) => {
+  return doc?.title ? `${doc.title} | Payload Template` : "Payload Template";
+};
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
-}
+// UPRAVENÉ: Odstránili sme typ 'Product'
+const generateURL: GenerateURL<Page> = ({ doc }) => {
+  const url = getServerSideURL();
+  return doc?.slug ? `${url}/${doc.slug}` : url;
+};
 
 export const plugins: Plugin[] = [
   seoPlugin({
@@ -37,16 +37,16 @@ export const plugins: Plugin[] = [
     },
     formSubmissionOverrides: {
       admin: {
-        group: 'Content',
+        group: "Content",
       },
     },
     formOverrides: {
       admin: {
-        group: 'Content',
+        group: "Content",
       },
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
-          if ('name' in field && field.name === 'confirmationMessage') {
+          if ("name" in field && field.name === "confirmationMessage") {
             return {
               ...field,
               editor: lexicalEditor({
@@ -54,39 +54,18 @@ export const plugins: Plugin[] = [
                   return [
                     ...rootFeatures,
                     FixedToolbarFeature(),
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                  ]
+                    HeadingFeature({
+                      enabledHeadingSizes: ["h1", "h2", "h3", "h4"],
+                    }),
+                  ];
                 },
               }),
-            }
+            };
           }
-          return field
-        })
+          return field;
+        });
       },
     },
-  }),
-  ecommercePlugin({
-    access: {
-      adminOnly,
-      adminOnlyFieldAccess,
-      adminOrCustomerOwner,
-      adminOrPublishedStatus,
-      customerOnlyFieldAccess,
-    },
-    customers: {
-      slug: 'users',
-    },
-    payments: {
-      paymentMethods: [
-        stripeAdapter({
-          secretKey: process.env.STRIPE_SECRET_KEY!,
-          publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-          webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
-        }),
-      ],
-    },
-    products: {
-      productsCollectionOverride: ProductsCollection,
-    },
-  }),
-]
+  }), // ZMAZALI SME CELÝ BLOK ecommercePlugin({...})
+];
+// --- Koniec súboru ---
